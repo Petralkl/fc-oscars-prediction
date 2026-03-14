@@ -1108,18 +1108,16 @@ async function handleSession(session) {
 }
 
 async function upsertProfile() {
-  // Fetch existing profile first
-  const { data: existing } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  const { data: existing } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
   if (existing) {
     userProfile = { display_name: existing.display_name, avatar_url: existing.avatar_url };
   } else {
-    // Fallback: create a basic profile from email
-    const fallbackName = currentUser.email.split('@')[0];
-    await sb.from('profiles').upsert({
+    const fallbackName = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
+    await sb.from('profiles').insert({
       id: currentUser.id,
       display_name: fallbackName,
       avatar_url: null,
-    }, { onConflict: 'id' });
+    });
     userProfile = { display_name: fallbackName, avatar_url: null };
   }
 }
@@ -1194,15 +1192,18 @@ async function handleAuth() {
   btn.disabled = true;
 
   if (authMode === 'signup') {
-    const { data, error } = await sb.auth.signUp({ email, password });
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: { data: { display_name: username } }
+    });
     if (error) { showAuthError(error.message); btn.textContent = 'Create Account'; btn.disabled = false; return; }
-    // Save display name to profile
     if (data.user) {
-      await sb.from('profiles').upsert({
+      await sb.from('profiles').insert({
         id: data.user.id,
         display_name: username,
         avatar_url: null,
-      }, { onConflict: 'id' });
+      });
     }
   } else {
     const { error } = await sb.auth.signInWithPassword({ email, password });
