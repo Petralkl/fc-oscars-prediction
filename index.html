@@ -607,11 +607,47 @@
       margin-bottom: 0.5rem;
     }
 
+    /* ── MY PICKS SUMMARY ── */
+    .mypicks-group { margin-bottom: 2rem; }
+    .mypicks-group-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .mypicks-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7rem 1rem;
+      background: var(--charcoal);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 3px;
+      margin-bottom: 0.4rem;
+      gap: 1rem;
+    }
+    .mypicks-row:hover { border-color: rgba(201,168,76,0.15); }
+    .mypicks-cat { font-size: 0.78rem; color: var(--text-dim); min-width: 140px; }
+    .mypicks-pick { font-size: 0.88rem; color: var(--text); text-align: right; }
+    .mypicks-pick.empty { color: var(--text-dim); font-style: italic; }
+    .mypicks-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+    .mypicks-dot.empty { background: var(--mid); }
+
     @media (max-width: 600px) {
       .nominees-grid { grid-template-columns: 1fr; }
       .winner-row { grid-template-columns: 1fr; }
       .lb-podium { gap: 0.5rem; }
       header { padding: 0 1rem; }
+      .mypicks-row { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+      .mypicks-pick { text-align: left; }
     }
   </style>
 </head>
@@ -625,7 +661,7 @@
   </div>
   <nav id="nav">
     <button class="nav-btn active" onclick="showPage('home')">Home</button>
-    <button class="nav-btn" onclick="showPage('predictions')" id="nav-predictions" style="display:none">Picks</button>
+    <button class="nav-btn" onclick="showPage('mypicks')" id="nav-predictions" style="display:none">My Picks</button>
     <button class="nav-btn" onclick="showPage('leaderboard')">Leaderboard</button>
     <button class="nav-btn" onclick="showPage('admin')" id="nav-admin" style="display:none">Admin</button>
   </nav>
@@ -709,7 +745,31 @@
   </div>
 </div>
 
-<!-- ── PAGE: LEADERBOARD ── -->
+<!-- ── PAGE: MY PICKS (summary) ── -->
+<div class="page" id="page-mypicks">
+  <div class="predictions-wrap" style="padding-bottom:4rem;">
+    <div class="section-header">
+      <h2 class="section-title">Your Picks</h2>
+      <span class="progress-label" id="mypicks-count"></span>
+    </div>
+
+    <div id="mypicks-locked-banner" class="locked-banner" style="display:none">
+      🔒 Predictions are locked. The 98th Academy Awards ceremony is underway!
+    </div>
+
+    <div id="mypicks-complete-banner" style="display:none; background:rgba(39,174,96,0.1); border:1px solid rgba(39,174,96,0.3); color:#2ecc71; padding:0.75rem 1.25rem; border-radius:3px; font-size:0.85rem; margin-bottom:2rem; align-items:center; gap:0.5rem;">
+      ✦ All 24 categories picked — you're ready for the ceremony!
+    </div>
+
+    <div id="mypicks-container"></div>
+
+    <div style="text-align:center; margin-top:2.5rem;" id="mypicks-edit-btn-wrap">
+      <button class="btn btn-outline" style="font-size:0.9rem; padding:0.65rem 2rem;" onclick="showPage('predictions')">✏️ Edit Picks</button>
+    </div>
+  </div>
+</div>
+
+
 <div class="page" id="page-leaderboard">
   <div class="leaderboard-wrap">
     <div class="lb-header">
@@ -995,7 +1055,8 @@ async function init() {
   sb.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_IN' && session) {
       await handleSession(session);
-      showPage('predictions');
+      const hasPicks = Object.keys(myPredictions).length > 0;
+      showPage(hasPicks ? 'mypicks' : 'predictions');
     }
     if (event === 'SIGNED_OUT') {
       currentUser = null;
@@ -1195,7 +1256,6 @@ async function savePredictions() {
     nominee,
   }));
 
-  // Upsert each prediction (insert or update on conflict)
   const { error } = await sb.from('predictions')
     .upsert(rows, { onConflict: 'user_id,category' });
 
@@ -1206,11 +1266,46 @@ async function savePredictions() {
   }
 
   unsaved = false;
-  statusEl.textContent = '✓ All picks saved';
-  statusEl.className = 'save-status saved';
-  setTimeout(() => {
-    document.getElementById('save-bar').classList.remove('visible');
-  }, 2000);
+  document.getElementById('save-bar').classList.remove('visible');
+  showPage('mypicks');
+  showToast('✓ Picks saved!');
+}
+
+function renderMyPicks() {
+  const container  = document.getElementById('mypicks-container');
+  const countEl    = document.getElementById('mypicks-count');
+  const lockedEl   = document.getElementById('mypicks-locked-banner');
+  const completeEl = document.getElementById('mypicks-complete-banner');
+  const editBtn    = document.getElementById('mypicks-edit-btn-wrap');
+
+  const total = CATEGORIES.length;
+  const done  = Object.keys(myPredictions).length;
+  countEl.textContent = `${done} / ${total}`;
+
+  lockedEl.style.display   = isLocked ? 'flex' : 'none';
+  completeEl.style.display = (!isLocked && done === total) ? 'flex' : 'none';
+  editBtn.style.display    = isLocked ? 'none' : 'block';
+
+  // Group into major and other
+  const major = CATEGORIES.filter(c => c.major);
+  const other = CATEGORIES.filter(c => !c.major);
+
+  function renderGroup(cats, title) {
+    let html = `<div class="mypicks-group"><div class="mypicks-group-title">${title}</div>`;
+    cats.forEach(cat => {
+      const pick = myPredictions[cat.id];
+      html += `
+        <div class="mypicks-row">
+          <span class="mypicks-cat">${cat.name}</span>
+          <div class="mypicks-dot ${pick ? '' : 'empty'}"></div>
+          <span class="mypicks-pick ${pick ? '' : 'empty'}">${pick || 'Not picked yet'}</span>
+        </div>`;
+    });
+    html += '</div>';
+    return html;
+  }
+
+  container.innerHTML = renderGroup(major, 'Major Categories') + renderGroup(other, 'All Other Categories');
 }
 
 // ═══════════════════════════════════════════════
@@ -1372,10 +1467,14 @@ function showPage(name) {
   const navMap = { home: 0, predictions: 1, leaderboard: 2, admin: 3 };
   const btns = document.querySelectorAll('.nav-btn');
   if (name === 'home') btns[0]?.classList.add('active');
-  if (name === 'predictions') btns[1]?.classList.add('active');
+  if (name === 'predictions' || name === 'mypicks') btns[1]?.classList.add('active');
   if (name === 'leaderboard') btns[2]?.classList.add('active');
   if (name === 'admin') btns[3]?.classList.add('active');
 
+  if (name === 'mypicks') {
+    if (!currentUser) { showPage('signin'); return; }
+    renderMyPicks();
+  }
   if (name === 'predictions') {
     if (!currentUser) { showPage('signin'); return; }
     renderPredictions();
