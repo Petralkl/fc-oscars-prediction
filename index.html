@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oscar Predictions 2026</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --gold-pale: #F5E9C8;
+      --black: #0A0A0A;
+      --charcoal: #1A1A1A;
+      --dark: #111111;
+      --mid: #2A2A2A;
+      --text: #E8E0D0;
+      --text-dim: #8A8278;
+      --cream: #F2ECD9;
+      --red: #C0392B;
+      --green: #27AE60;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Film grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .logo span { color: var(--text); font-weight: 400; font-style: italic; }
+
+    nav { display: flex; gap: 0.25rem; align-items: center; }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-btn:hover, .nav-btn.active { color: var(--gold); background: rgba(201,168,76,0.08); }
+
+    .user-area { display: flex; align-items: center; gap: 0.75rem; }
+
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      object-fit: cover;
+    }
+
+    .btn {
+      padding: 0.45rem 1.1rem;
+      border-radius: 2px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--black);
+    }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold);
+    }
+    .btn-outline:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+    /* ── PAGES ── */
+    .page { display: none; animation: fadeIn 0.3s ease; }
+    .page.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-sub {
+      color: var(--text-dim);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    .hero-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin: 3rem auto;
+      max-width: 400px;
+    }
+    .hero-divider::before, .hero-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(201,168,76,0.4));
+    }
+    .hero-divider::after { background: linear-gradient(to left, transparent, rgba(201,168,76,0.4)); }
+    .hero-divider-icon { color: var(--gold); font-size: 1rem; }
+
+    /* ── SIGN IN PAGE ── */
+    .signin-wrap {
+      max-width: 420px;
+      margin: 5rem auto;
+      padding: 3rem 2.5rem;
+      background: var(--charcoal);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .signin-wrap h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .signin-sub {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: #fff;
+      color: #333;
+      border: none;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .google-btn:hover { background: #f0f0f0; }
+    .google-btn:active { transform: scale(0.99); }
+    .google-btn svg { width: 20px; height: 20px; }
+
+    /* ── PREDICTIONS ── */
+    .predictions-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .progress-label {
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    .progress-bar-wrap {
+      background: var(--mid);
+      height: 3px;
+      border-radius: 2px;
+      margin-bottom: 2.5rem;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, var(--gold), var(--gold-light));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    .locked-banner {
+      background: rgba(192,57,43,0.12);
+      border: 1px solid rgba(192,57,43,0.3);
+      color: #E74C3C;
+      padding: 0.75rem 1.25rem;
+      border-radius: 3px;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .category-card {
+      background: var(--charcoal);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .category-card.selected { border-color: rgba(201,168,76,0.35); }
+
+    .category-header {
+      padding: 1rem 1.25rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .category-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .category-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--mid);
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+    }
+    .category-tag.major { color: var(--gold); background: rgba(201,168,76,0.12); }
+
+    .nominees-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.5rem;
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    .nominee-btn {
+      background: var(--dark);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 3px;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.3;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .nominee-btn:hover:not(:disabled) { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.05); }
+    .nominee-btn.picked {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.12);
+      color: var(--gold-light);
+    }
+    .nominee-btn.picked::after {
+      content: '✓';
+      position: absolute;
+      right: 0.7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 0.8rem;
+    }
+    .nominee-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: rgba(26,26,26,0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(201,168,76,0.2);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .save-bar.visible { transform: translateY(0); }
+    .save-status { font-size: 0.85rem; color: var(--text-dim); }
+    .save-status.saving { color: var(--gold); }
+    .save-status.saved { color: var(--green); }
+
+    /* ── LEADERBOARD ── */
+    .leaderboard-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    .lb-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .lb-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+    }
+    .lb-header p { color: var(--text-dim); font-size: 0.9rem; }
+
+    .lb-podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .podium-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .podium-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .podium-item:nth-child(1) .podium-avatar { width: 56px; height: 56px; border: 2px solid var(--gold); }
+
+    .podium-name { font-size: 0.75rem; text-align: center; max-width: 80px; }
+    .podium-score { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); }
+
+    .podium-block {
+      width: 80px;
+      background: var(--charcoal);
+      border-radius: 3px 3px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--text-dim);
+    }
+    .podium-item:nth-child(1) .podium-block { height: 80px; background: rgba(201,168,76,0.15); color: var(--gold); }
+    .podium-item:nth-child(2) .podium-block { height: 60px; }
+    .podium-item:nth-child(3) .podium-block { height: 44px; }
+
+    .lb-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .lb-table th {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 0.5rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .lb-table td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.9rem;
+    }
+    .lb-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .lb-rank {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      width: 40px;
+    }
+    .lb-rank.top { color: var(--gold); }
+
+    .lb-user { display: flex; align-items: center; gap: 0.75rem; }
+    .lb-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+    .lb-name { font-weight: 500; }
+    .lb-you { font-size: 0.65rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-left: 0.4rem; }
+
+    .lb-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      text-align: right;
+    }
+    .lb-score-sub { font-size: 0.7rem; color: var(--text-dim); font-family: 'DM Sans', sans-serif; }
+
+    .lb-no-winners {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    /* ── ADMIN ── */
+    .admin-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    .admin-header {
+      margin-bottom: 2.5rem;
+    }
+    .admin-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 0.25rem;
+    }
+    .admin-header p { color: var(--text-dim); font-size: 0.85rem; }
+
+    .admin-card {
+      background: var(--charcoal);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .admin-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .lock-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .lock-info p { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.25rem; }
+
+    .toggle-switch {
+      position: relative;
+      width: 52px; height: 28px;
+      cursor: pointer;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--mid);
+      border-radius: 14px;
+      transition: background 0.3s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 4px; left: 4px;
+      transition: transform 0.3s;
+    }
+    .toggle-switch input:checked ~ .toggle-track { background: var(--red); }
+    .toggle-switch input:checked ~ .toggle-track::after { transform: translateX(24px); }
+
+    .winner-form { display: grid; gap: 0.75rem; }
+    .winner-row {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .winner-row select, .winner-row input {
+      background: var(--dark);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 3px;
+      width: 100%;
+    }
+    .winner-row select option { background: var(--dark); }
+
+    .winner-saved {
+      display: none;
+      font-size: 0.75rem;
+      color: var(--green);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--charcoal);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--text);
+      padding: 0.85rem 1.25rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      z-index: 1000;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { border-color: rgba(192,57,43,0.4); }
+
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(201,168,76,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--text-dim);
+    }
+    .empty-state h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .nominees-grid { grid-template-columns: 1fr; }
+      .winner-row { grid-template-columns: 1fr; }
+      .lb-podium { gap: 0.5rem; }
+      header { padding: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Oscar<span>Picks</span> '26</div>
+  <nav id="nav">
+    <button class="nav-btn active" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" onclick="showPage('predictions')" id="nav-predictions" style="display:none">Picks</button>
+    <button class="nav-btn" onclick="showPage('leaderboard')">Leaderboard</button>
+    <button class="nav-btn" onclick="showPage('admin')" id="nav-admin" style="display:none">Admin</button>
+  </nav>
+  <div class="user-area" id="user-area">
+    <button class="btn btn-gold" onclick="showPage('signin')">Sign In</button>
+  </div>
+</header>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ── PAGE: HOME ── -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <p class="hero-eyebrow">☆ &nbsp; 98th Academy Awards &nbsp; ☆</p>
+    <h1>Who Will<em>Win?</em></h1>
+    <p class="hero-sub">Pick your winners across all major categories. Compete with your community on the leaderboard. Predictions lock before the ceremony begins.</p>
+    <button class="btn btn-gold" style="font-size:0.95rem; padding:0.75rem 2rem;" onclick="handleStartPicking()">Make Your Picks →</button>
+    <div class="hero-divider"><span class="hero-divider-icon">✦</span></div>
+    <div style="display:flex; gap:3rem; justify-content:center; flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif; font-size:2.5rem; color:var(--gold);" id="stat-categories">24</div>
+        <div style="font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-top:0.25rem;">Categories</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif; font-size:2.5rem; color:var(--gold);" id="stat-players">—</div>
+        <div style="font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-top:0.25rem;">Players</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:'Playfair Display',serif; font-size:2.5rem; color:var(--gold);">Mar 15</div>
+        <div style="font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-top:0.25rem;">Ceremony</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE: SIGN IN ── -->
+<div class="page" id="page-signin">
+  <div class="signin-wrap">
+    <p style="font-size:2rem; margin-bottom:1rem;">🏆</p>
+    <h2>Sign In to Play</h2>
+    <p class="signin-sub">Use your Google account to submit predictions and appear on the leaderboard.</p>
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+    <p style="margin-top:1.5rem; font-size:0.75rem; color:var(--text-dim); line-height:1.5;">Your Google account ensures one set of picks per person,<br>keeping the leaderboard fair for everyone.</p>
+  </div>
+</div>
+
+<!-- ── PAGE: PREDICTIONS ── -->
+<div class="page" id="page-predictions">
+  <div class="predictions-wrap">
+    <div class="section-header">
+      <h2 class="section-title">Your Picks</h2>
+      <span class="progress-label" id="progress-label">0 / 24</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+      <div class="locked-banner" id="locked-banner" style="display:none">
+      🔒 Predictions are locked. The 98th Academy Awards ceremony is underway — March 15, 2026!
+    </div>
+    <div id="categories-container">
+      <div class="empty-state"><div class="spinner"></div></div>
+    </div>
+  </div>
+  <div class="save-bar" id="save-bar">
+    <span class="save-status" id="save-status">Unsaved changes</span>
+    <button class="btn btn-gold" onclick="savePredictions()">Save Picks</button>
+  </div>
+</div>
+
+<!-- ── PAGE: LEADERBOARD ── -->
+<div class="page" id="page-leaderboard">
+  <div class="leaderboard-wrap">
+    <div class="lb-header">
+      <h2>Leaderboard</h2>
+      <p id="lb-subtitle">Scores update as winners are announced</p>
+    </div>
+    <div id="leaderboard-container">
+      <div class="empty-state"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE: ADMIN ── -->
+<div class="page" id="page-admin">
+  <div class="admin-wrap">
+    <div class="admin-header">
+      <h2>Admin Panel</h2>
+      <p>Manage predictions lock and enter winners after the ceremony</p>
+    </div>
+
+    <div class="admin-card">
+      <h3>🔒 Predictions Lock</h3>
+      <div class="lock-toggle">
+        <div class="lock-info">
+          <strong id="lock-status-label">Loading...</strong>
+          <p>When locked, no one can submit or change their picks</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="lock-toggle-input" onchange="toggleLock(this.checked)">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h3>🏆 Enter Winners</h3>
+      <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:1.25rem;">Select the winner for each category after the ceremony. Scores update instantly.</p>
+      <div class="winner-form" id="winner-form">
+        <div class="empty-state"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════
+const SUPABASE_URL = 'https://kdkkaudkadqefayaxbmk.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_NTvg1A0PTMlJHaF26RU9ZQ_FCHF6nfY';
+const ADMIN_EMAIL  = 'filmclub.id@gmail.com'; // Set your Google email here to unlock admin panel
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ═══════════════════════════════════════════════
+//  OSCAR DATA — 2025 (97th Academy Awards)
+// ═══════════════════════════════════════════════
+const CATEGORIES = [
+  { id: 'best_picture', name: 'Best Picture', major: true, nominees: [
+    'Bugonia', 'F1', 'Frankenstein', 'Hamnet', 'Marty Supreme',
+    'One Battle After Another', 'The Secret Agent', 'Sentimental Value', 'Sinners', 'Train Dreams'
+  ]},
+  { id: 'best_director', name: 'Best Director', major: true, nominees: [
+    'Paul Thomas Anderson — One Battle After Another',
+    'Ryan Coogler — Sinners',
+    'Josh Safdie — Marty Supreme',
+    'Joachim Trier — Sentimental Value',
+    'Chloé Zhao — Hamnet'
+  ]},
+  { id: 'best_actor', name: 'Best Actor', major: true, nominees: [
+    'Timothée Chalamet — Marty Supreme',
+    'Leonardo DiCaprio — One Battle After Another',
+    'Ethan Hawke — Blue Moon',
+    'Michael B. Jordan — Sinners',
+    'Wagner Moura — The Secret Agent'
+  ]},
+  { id: 'best_actress', name: 'Best Actress', major: true, nominees: [
+    'Jessie Buckley — Hamnet',
+    'Rose Byrne — If I Had Legs I\'d Kick You',
+    'Kate Hudson — Song Sung Blue',
+    'Renate Reinsve — Sentimental Value',
+    'Emma Stone — Bugonia'
+  ]},
+  { id: 'best_supporting_actor', name: 'Best Supporting Actor', major: true, nominees: [
+    'Benicio Del Toro — One Battle After Another',
+    'Jacob Elordi — Frankenstein',
+    'Delroy Lindo — Sinners',
+    'Sean Penn — One Battle After Another',
+    'Stellan Skarsgård — Sentimental Value'
+  ]},
+  { id: 'best_supporting_actress', name: 'Best Supporting Actress', major: true, nominees: [
+    'Elle Fanning — Sentimental Value',
+    'Inga Ibsdotter Lilleaas — Sentimental Value',
+    'Amy Madigan — Weapons',
+    'Wunmi Mosaku — Sinners',
+    'Teyana Taylor — One Battle After Another'
+  ]},
+  { id: 'best_casting', name: 'Best Casting ✦ NEW', major: true, nominees: [
+    'Hamnet — Nina Gold',
+    'Marty Supreme — Jennifer Venditti',
+    'One Battle After Another — Cassandra Kulukundis',
+    'The Secret Agent — Gabriel Domingues',
+    'Sinners — Francine Maisler'
+  ]},
+  { id: 'best_animated_feature', name: 'Best Animated Feature', nominees: [
+    'Arco', 'Elio', 'KPop Demon Hunters', 'Little Amélie or the Character of Rain', 'Zootopia 2'
+  ]},
+  { id: 'best_international_film', name: 'Best International Feature', nominees: [
+    'The Secret Agent — Brazil',
+    'It Was Just an Accident — France',
+    'Sentimental Value — Norway',
+    'Sirāt — Spain',
+    'The Voice of Hind Rajab — Tunisia'
+  ]},
+  { id: 'best_documentary_feature', name: 'Best Documentary Feature', nominees: [
+    'The Alabama Solution', 'Come See Me in the Good Light',
+    'Cutting Through Rocks', 'Mr. Nobody Against Putin', 'The Perfect Neighbor'
+  ]},
+  { id: 'best_documentary_short', name: 'Best Documentary Short', nominees: [
+    'All the Empty Rooms', 'Armed Only with a Camera: The Life and Death of Brent Renaud',
+    'Children No More: "Were and Are Gone"', 'The Devil Is Busy', 'Perfectly a Strangeness'
+  ]},
+  { id: 'best_live_action_short', name: 'Best Live Action Short', nominees: [
+    'Butcher\'s Stain', 'A Friend of Dorothy',
+    'Jane Austen\'s Period Drama', 'The Singers', 'Two People Exchanging Saliva'
+  ]},
+  { id: 'best_animated_short', name: 'Best Animated Short', nominees: [
+    'Butterfly', 'Forevergreen', 'The Girl Who Cried Pearls', 'Retirement Plan', 'The Three Sisters'
+  ]},
+  { id: 'best_adapted_screenplay', name: 'Best Adapted Screenplay', nominees: [
+    'Bugonia — Will Tracy',
+    'Frankenstein — Guillermo del Toro',
+    'Hamnet — Chloé Zhao & Maggie O\'Farrell',
+    'One Battle After Another — Paul Thomas Anderson',
+    'Train Dreams — Clint Bentley & Greg Kwedar'
+  ]},
+  { id: 'best_original_screenplay', name: 'Best Original Screenplay', nominees: [
+    'Blue Moon — Robert Kaplow',
+    'It Was Just an Accident — Jafar Panahi',
+    'Marty Supreme — Ronald Bronstein & Josh Safdie',
+    'Sentimental Value — Eskil Vogt & Joachim Trier',
+    'Sinners — Ryan Coogler'
+  ]},
+  { id: 'best_cinematography', name: 'Best Cinematography', nominees: [
+    'Frankenstein — Dan Laustsen',
+    'Marty Supreme — Darius Khondji',
+    'One Battle After Another — Michael Bauman',
+    'Sinners — Autumn Durald Arkapaw',
+    'Train Dreams — Adolpho Veloso'
+  ]},
+  { id: 'best_film_editing', name: 'Best Film Editing', nominees: [
+    'F1 — Stephen Mirrione',
+    'Marty Supreme — Ronald Bronstein & Josh Safdie',
+    'One Battle After Another — Andy Jurgensen',
+    'Sentimental Value — Olivier Bugge Coutté',
+    'Sinners — Michael P. Shawver'
+  ]},
+  { id: 'best_production_design', name: 'Best Production Design', nominees: [
+    'Frankenstein — Tamara Deverell',
+    'Hamnet — Fiona Crombie',
+    'Marty Supreme — Jack Fisk',
+    'One Battle After Another — Florencia Martin',
+    'Sinners — Hannah Beachler'
+  ]},
+  { id: 'best_costume_design', name: 'Best Costume Design', nominees: [
+    'Avatar: Fire and Ash — Deborah L. Scott',
+    'Frankenstein — Kate Hawley',
+    'Hamnet — Malgosia Turzanska',
+    'Marty Supreme — Miyako Bellizzi',
+    'Sinners — Ruth E. Carter'
+  ]},
+  { id: 'best_makeup', name: 'Best Makeup & Hairstyling', nominees: [
+    'Frankenstein', 'Kokuho', 'Sinners', 'The Smashing Machine', 'The Ugly Stepsister'
+  ]},
+  { id: 'best_vfx', name: 'Best Visual Effects', nominees: [
+    'Avatar: Fire and Ash', 'F1', 'Jurassic World Rebirth', 'The Lost Bus', 'Sinners'
+  ]},
+  { id: 'best_sound', name: 'Best Sound', nominees: [
+    'F1', 'Frankenstein', 'One Battle After Another', 'Sinners', 'Sirāt'
+  ]},
+  { id: 'best_score', name: 'Best Original Score', nominees: [
+    'Bugonia — Jerskin Fendrix',
+    'Frankenstein — Alexandre Desplat',
+    'Hamnet — Max Richter',
+    'One Battle After Another — Jonny Greenwood',
+    'Sinners — Ludwig Göransson'
+  ]},
+  { id: 'best_original_song', name: 'Best Original Song', nominees: [
+    '"Dear Me" — Diane Warren: Relentless',
+    '"Golden" — KPop Demon Hunters',
+    '"I Lied To You" — Sinners',
+    '"Sweet Dreams Of Joy" — Viva Verdi!',
+    '"Train Dreams" — Train Dreams'
+  ]},
+];
+
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+let currentUser   = null;
+let userProfile   = null;
+let myPredictions = {}; // { category_id: nominee_text }
+let winners       = {}; // { category_id: winner_text }
+let isLocked      = false;
+let unsaved       = false;
+let autoSaveTimer = null;
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) await handleSession(session);
+
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      await handleSession(session);
+      showPage('predictions');
+    }
+    if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      userProfile = null;
+      myPredictions = {};
+      renderUserArea();
+      document.getElementById('nav-predictions').style.display = 'none';
+      document.getElementById('nav-admin').style.display = 'none';
+    }
+  });
+
+  await loadSettings();
+  updateStatPlayers();
+}
+
+async function handleSession(session) {
+  currentUser = session.user;
+  await upsertProfile();
+  await loadMyPredictions();
+  renderUserArea();
+  document.getElementById('nav-predictions').style.display = 'inline-block';
+  if (currentUser.email === ADMIN_EMAIL || ADMIN_EMAIL === '') {
+    document.getElementById('nav-admin').style.display = 'inline-block';
+  }
+}
+
+async function upsertProfile() {
+  const meta = currentUser.user_metadata;
+  const { error } = await sb.from('profiles').upsert({
+    id: currentUser.id,
+    display_name: meta.full_name || meta.name || 'Anonymous',
+    avatar_url: meta.avatar_url || meta.picture || null,
+  }, { onConflict: 'id' });
+  if (!error) {
+    userProfile = { display_name: meta.full_name || meta.name || 'Anonymous', avatar_url: meta.avatar_url || meta.picture };
+  }
+}
+
+async function loadSettings() {
+  const { data } = await sb.from('settings').select('*');
+  if (data) {
+    const lockSetting = data.find(s => s.key === 'predictions_locked');
+    isLocked = lockSetting?.value === 'true';
+  }
+}
+
+async function loadMyPredictions() {
+  if (!currentUser) return;
+  const { data } = await sb.from('predictions').select('*').eq('user_id', currentUser.id);
+  if (data) {
+    myPredictions = {};
+    data.forEach(p => { myPredictions[p.category] = p.nominee; });
+  }
+}
+
+async function loadWinners() {
+  const { data } = await sb.from('winners').select('*');
+  if (data) {
+    winners = {};
+    data.forEach(w => { winners[w.category] = w.winner; });
+  }
+}
+
+async function updateStatPlayers() {
+  const { count } = await sb.from('profiles').select('id', { count: 'exact', head: true });
+  document.getElementById('stat-players').textContent = count ?? '—';
+}
+
+// ═══════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════
+async function signInWithGoogle() {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+  if (error) showToast('Sign in failed: ' + error.message, true);
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  showPage('home');
+  showToast('Signed out');
+}
+
+function handleStartPicking() {
+  if (currentUser) showPage('predictions');
+  else showPage('signin');
+}
+
+// ═══════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════
+function renderUserArea() {
+  const area = document.getElementById('user-area');
+  if (currentUser && userProfile) {
+    area.innerHTML = `
+      <img class="avatar" src="${userProfile.avatar_url || ''}" onerror="this.style.display='none'" alt="">
+      <span style="font-size:0.85rem; color:var(--text-dim);">${userProfile.display_name.split(' ')[0]}</span>
+      <button class="btn btn-outline" onclick="signOut()">Sign Out</button>
+    `;
+  } else {
+    area.innerHTML = `<button class="btn btn-gold" onclick="showPage('signin')">Sign In</button>`;
+  }
+}
+
+function renderPredictions() {
+  const container = document.getElementById('categories-container');
+  const banner    = document.getElementById('locked-banner');
+
+  if (isLocked) banner.style.display = 'flex';
+  else banner.style.display = 'none';
+
+  let html = '';
+  CATEGORIES.forEach(cat => {
+    const picked = myPredictions[cat.id];
+    const hasPick = !!picked;
+    html += `
+      <div class="category-card ${hasPick ? 'selected' : ''}" id="card-${cat.id}">
+        <div class="category-header">
+          <span class="category-name">${cat.name}</span>
+          <span class="category-tag ${cat.major ? 'major' : ''}">${cat.major ? 'Major' : 'Category'}</span>
+        </div>
+        <div class="nominees-grid">
+          ${cat.nominees.map(n => `
+            <button class="nominee-btn ${picked === n ? 'picked' : ''}"
+              onclick="selectNominee('${cat.id}', ${JSON.stringify(n)})"
+              ${isLocked ? 'disabled' : ''}>
+              ${n}
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+  });
+
+  container.innerHTML = html;
+  updateProgress();
+}
+
+function selectNominee(catId, nominee) {
+  if (isLocked) return;
+  if (myPredictions[catId] === nominee) {
+    delete myPredictions[catId];
+  } else {
+    myPredictions[catId] = nominee;
+  }
+
+  // Update UI for this card only
+  const card = document.getElementById('card-' + catId);
+  const cat  = CATEGORIES.find(c => c.id === catId);
+  card.className = 'category-card ' + (myPredictions[catId] ? 'selected' : '');
+  card.querySelector('.nominees-grid').innerHTML = cat.nominees.map(n => `
+    <button class="nominee-btn ${myPredictions[catId] === n ? 'picked' : ''}"
+      onclick="selectNominee('${catId}', ${JSON.stringify(n)})">
+      ${n}
+    </button>
+  `).join('');
+
+  updateProgress();
+  markUnsaved();
+}
+
+function updateProgress() {
+  const total = CATEGORIES.length;
+  const done  = Object.keys(myPredictions).length;
+  document.getElementById('progress-label').textContent = `${done} / ${total}`;
+  document.getElementById('progress-bar').style.width = `${(done / total) * 100}%`;
+}
+
+function markUnsaved() {
+  unsaved = true;
+  document.getElementById('save-bar').classList.add('visible');
+  document.getElementById('save-status').textContent = 'Unsaved changes';
+  document.getElementById('save-status').className = 'save-status';
+
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(savePredictions, 3000);
+}
+
+async function savePredictions() {
+  if (!currentUser || isLocked) return;
+
+  const statusEl = document.getElementById('save-status');
+  statusEl.textContent = 'Saving…';
+  statusEl.className = 'save-status saving';
+
+  const rows = Object.entries(myPredictions).map(([category, nominee]) => ({
+    user_id: currentUser.id,
+    category,
+    nominee,
+  }));
+
+  // Delete all existing predictions and re-insert (clean upsert)
+  await sb.from('predictions').delete().eq('user_id', currentUser.id);
+  if (rows.length > 0) {
+    const { error } = await sb.from('predictions').insert(rows);
+    if (error) {
+      showToast('Save failed: ' + error.message, true);
+      statusEl.textContent = 'Save failed';
+      return;
+    }
+  }
+
+  unsaved = false;
+  statusEl.textContent = '✓ All picks saved';
+  statusEl.className = 'save-status saved';
+  setTimeout(() => {
+    document.getElementById('save-bar').classList.remove('visible');
+  }, 2000);
+}
+
+// ═══════════════════════════════════════════════
+//  LEADERBOARD
+// ═══════════════════════════════════════════════
+async function renderLeaderboard() {
+  const container = document.getElementById('leaderboard-container');
+  container.innerHTML = '<div class="empty-state"><div class="spinner"></div></div>';
+
+  await loadWinners();
+
+  const { data: profiles } = await sb.from('profiles').select('*');
+  const { data: allPredictions } = await sb.from('predictions').select('*');
+
+  if (!profiles || !allPredictions) {
+    container.innerHTML = '<div class="lb-no-winners">Could not load leaderboard.</div>';
+    return;
+  }
+
+  const winnerCount = Object.keys(winners).length;
+
+  // Score each user
+  const scores = profiles.map(p => {
+    const preds = allPredictions.filter(pr => pr.user_id === p.id);
+    let correct = 0;
+    preds.forEach(pr => {
+      if (winners[pr.category] && winners[pr.category] === pr.nominee) correct++;
+    });
+    return { ...p, correct, total: preds.length };
+  });
+
+  scores.sort((a, b) => b.correct - a.correct || b.total - a.total);
+
+  if (winnerCount === 0) {
+    // Show picks submitted counts only
+    let html = `
+      <div class="lb-no-winners" style="margin-bottom:2rem;">
+        <h3>Picks are in!</h3>
+        <p>Scores will appear once winners are announced on ceremony night.</p>
+      </div>
+      <table class="lb-table">
+        <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Picks Made</th></tr></thead>
+        <tbody>`;
+    scores.forEach((s, i) => {
+      const isMe = currentUser && s.id === currentUser.id;
+      html += `<tr>
+        <td class="lb-rank ${i < 3 ? 'top' : ''}">${i + 1}</td>
+        <td><div class="lb-user">
+          <img class="lb-avatar" src="${s.avatar_url || ''}" onerror="this.style.display='none'">
+          <span class="lb-name">${s.display_name}${isMe ? '<span class="lb-you">You</span>' : ''}</span>
+        </div></td>
+        <td class="lb-score">${s.total}<div class="lb-score-sub">picks</div></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+    return;
+  }
+
+  // With winners — show full scores
+  const top3 = scores.slice(0, 3);
+  let podiumHtml = '<div class="lb-podium">';
+  const order = top3.length >= 3 ? [1, 0, 2] : [0, 1, 2];
+  const heights = [60, 80, 44];
+  order.forEach((idx, pos) => {
+    const s = scores[idx];
+    if (!s) return;
+    podiumHtml += `
+      <div class="podium-item">
+        <img class="podium-avatar" src="${s.avatar_url || ''}" onerror="this.style.display='none'" alt="">
+        <div class="podium-name">${s.display_name.split(' ')[0]}</div>
+        <div class="podium-score">${s.correct}</div>
+        <div class="podium-block" style="height:${heights[pos]}px">${idx + 1}</div>
+      </div>`;
+  });
+  podiumHtml += '</div>';
+
+  let tableHtml = `<table class="lb-table">
+    <thead><tr><th>#</th><th>Player</th><th style="text-align:right">Score</th></tr></thead><tbody>`;
+  scores.forEach((s, i) => {
+    const isMe = currentUser && s.id === currentUser.id;
+    tableHtml += `<tr>
+      <td class="lb-rank ${i < 3 ? 'top' : ''}">${i + 1}</td>
+      <td><div class="lb-user">
+        <img class="lb-avatar" src="${s.avatar_url || ''}" onerror="this.style.display='none'">
+        <span class="lb-name">${s.display_name}${isMe ? '<span class="lb-you">You</span>' : ''}</span>
+      </div></td>
+      <td class="lb-score">${s.correct} / ${winnerCount}<div class="lb-score-sub">correct</div></td>
+    </tr>`;
+  });
+  tableHtml += '</tbody></table>';
+
+  document.getElementById('lb-subtitle').textContent = `${winnerCount} of 23 winners announced`;
+  container.innerHTML = podiumHtml + tableHtml;
+}
+
+// ═══════════════════════════════════════════════
+//  ADMIN
+// ═══════════════════════════════════════════════
+async function renderAdmin() {
+  // Lock toggle
+  const lockInput = document.getElementById('lock-toggle-input');
+  lockInput.checked = isLocked;
+  document.getElementById('lock-status-label').textContent = isLocked ? '🔴 Predictions are LOCKED' : '🟢 Predictions are OPEN';
+
+  // Winners form
+  await loadWinners();
+  const form = document.getElementById('winner-form');
+  form.innerHTML = CATEGORIES.map(cat => `
+    <div class="winner-row">
+      <div style="font-size:0.82rem; color:var(--text-dim); line-height:1.3;">${cat.name}</div>
+      <select onchange="saveWinner('${cat.id}', this.value)" id="winner-select-${cat.id}">
+        <option value="">— No winner yet —</option>
+        ${cat.nominees.map(n => `<option value="${n}" ${winners[cat.id] === n ? 'selected' : ''}>${n}</option>`).join('')}
+      </select>
+      <span class="winner-saved" id="winner-saved-${cat.id}">✓ Saved</span>
+    </div>
+  `).join('');
+}
+
+async function toggleLock(locked) {
+  const { error } = await sb.from('settings')
+    .upsert({ key: 'predictions_locked', value: locked ? 'true' : 'false' }, { onConflict: 'key' });
+  if (!error) {
+    isLocked = locked;
+    document.getElementById('lock-status-label').textContent = locked ? '🔴 Predictions are LOCKED' : '🟢 Predictions are OPEN';
+    showToast(locked ? 'Predictions locked 🔒' : 'Predictions unlocked 🔓');
+  } else {
+    showToast('Failed to update lock', true);
+  }
+}
+
+async function saveWinner(categoryId, nominee) {
+  if (!nominee) {
+    await sb.from('winners').delete().eq('category', categoryId);
+    delete winners[categoryId];
+    return;
+  }
+  const { error } = await sb.from('winners')
+    .upsert({ category: categoryId, winner: nominee }, { onConflict: 'category' });
+  if (!error) {
+    winners[categoryId] = nominee;
+    const el = document.getElementById('winner-saved-' + categoryId);
+    el.style.display = 'inline';
+    setTimeout(() => { el.style.display = 'none'; }, 2000);
+  } else {
+    showToast('Failed to save winner', true);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+
+  const navMap = { home: 0, predictions: 1, leaderboard: 2, admin: 3 };
+  const btns = document.querySelectorAll('.nav-btn');
+  if (name === 'home') btns[0]?.classList.add('active');
+  if (name === 'predictions') btns[1]?.classList.add('active');
+  if (name === 'leaderboard') btns[2]?.classList.add('active');
+  if (name === 'admin') btns[3]?.classList.add('active');
+
+  if (name === 'predictions') {
+    if (!currentUser) { showPage('signin'); return; }
+    renderPredictions();
+  }
+  if (name === 'leaderboard') renderLeaderboard();
+  if (name === 'admin') renderAdmin();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+// ── GO ──
+init();
+</script>
+</body>
+</html>
