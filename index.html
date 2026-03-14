@@ -1195,15 +1195,14 @@ async function savePredictions() {
     nominee,
   }));
 
-  // Delete all existing predictions and re-insert (clean upsert)
-  await sb.from('predictions').delete().eq('user_id', currentUser.id);
-  if (rows.length > 0) {
-    const { error } = await sb.from('predictions').insert(rows);
-    if (error) {
-      showToast('Save failed: ' + error.message, true);
-      statusEl.textContent = 'Save failed';
-      return;
-    }
+  // Upsert each prediction (insert or update on conflict)
+  const { error } = await sb.from('predictions')
+    .upsert(rows, { onConflict: 'user_id,category' });
+
+  if (error) {
+    showToast('Save failed: ' + error.message, true);
+    statusEl.textContent = 'Save failed';
+    return;
   }
 
   unsaved = false;
