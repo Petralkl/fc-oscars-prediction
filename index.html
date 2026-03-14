@@ -911,7 +911,7 @@
 // ═══════════════════════════════════════════════
 const SUPABASE_URL = 'https://kdkkaudkadqefayaxbmk.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_NTvg1A0PTMlJHaF26RU9ZQ_FCHF6nfY';
-const ADMIN_EMAIL  = ''; // Set your Google email here to unlock admin panel
+const ADMIN_ID = 'ada0665b-5753-4893-8b8c-92d2533e1d46'; // Only this user sees Admin
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1102,7 +1102,7 @@ async function handleSession(session) {
   await loadMyPredictions();
   renderUserArea();
   document.getElementById('nav-predictions').style.display = 'inline-block';
-  if (currentUser.email === ADMIN_EMAIL || ADMIN_EMAIL === '') {
+  if (currentUser.id === ADMIN_ID) {
     document.getElementById('nav-admin').style.display = 'inline-block';
   }
 }
