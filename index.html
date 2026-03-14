@@ -1122,7 +1122,9 @@ function renderPredictions() {
         <div class="nominees-grid">
           ${cat.nominees.map(n => `
             <button class="nominee-btn ${picked === n ? 'picked' : ''}"
-              onclick="selectNominee('${cat.id}', ${JSON.stringify(n)})"
+              onclick="selectNominee(this)"
+              data-cat="${cat.id}"
+              data-nominee="${n.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}"
               ${isLocked ? 'disabled' : ''}>
               ${n}
             </button>
@@ -1135,8 +1137,11 @@ function renderPredictions() {
   updateProgress();
 }
 
-function selectNominee(catId, nominee) {
+function selectNominee(btn) {
   if (isLocked) return;
+  const catId   = btn.dataset.cat;
+  const nominee = btn.dataset.nominee;
+
   if (myPredictions[catId] === nominee) {
     delete myPredictions[catId];
   } else {
@@ -1149,7 +1154,9 @@ function selectNominee(catId, nominee) {
   card.className = 'category-card ' + (myPredictions[catId] ? 'selected' : '');
   card.querySelector('.nominees-grid').innerHTML = cat.nominees.map(n => `
     <button class="nominee-btn ${myPredictions[catId] === n ? 'picked' : ''}"
-      onclick="selectNominee('${catId}', ${JSON.stringify(n)})">
+      onclick="selectNominee(this)"
+      data-cat="${catId}"
+      data-nominee="${n.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}">
       ${n}
     </button>
   `).join('');
@@ -1297,7 +1304,7 @@ async function renderLeaderboard() {
   });
   tableHtml += '</tbody></table>';
 
-  document.getElementById('lb-subtitle').textContent = `${winnerCount} of 23 winners announced`;
+  document.getElementById('lb-subtitle').textContent = `${winnerCount} of 24 winners announced`;
   container.innerHTML = podiumHtml + tableHtml;
 }
 
