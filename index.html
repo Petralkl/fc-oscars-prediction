@@ -702,41 +702,32 @@
 <div class="page" id="page-signin">
   <div class="signin-wrap">
     <p style="font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:0.25rem;">Film Club</p>
-    <h2 id="auth-title">Sign In</h2>
-    <p class="signin-sub" id="auth-subtitle">Enter your details to submit predictions and compete on the leaderboard.</p>
+    <h2>Join the Game</h2>
+    <p class="signin-sub">Enter your name to make predictions and appear on the leaderboard.</p>
 
-    <!-- Toggle -->
-    <div style="display:flex; background:var(--dark); border-radius:3px; padding:3px; margin-bottom:1.5rem;">
-      <button id="tab-signin" onclick="switchAuthTab('signin')" style="flex:1; padding:0.4rem; border:none; border-radius:2px; font-family:'DM Sans',sans-serif; font-size:0.8rem; cursor:pointer; background:var(--gold); color:var(--black); font-weight:500; transition:all 0.2s;">Sign In</button>
-      <button id="tab-signup" onclick="switchAuthTab('signup')" style="flex:1; padding:0.4rem; border:none; border-radius:2px; font-family:'DM Sans',sans-serif; font-size:0.8rem; cursor:pointer; background:transparent; color:var(--text-dim); transition:all 0.2s;">Create Account</button>
-    </div>
-
-    <!-- Username field (signup only) -->
-    <div id="field-username" style="display:none; margin-bottom:0.75rem;">
-      <input type="text" id="input-username" placeholder="Display name (e.g. Alex)" maxlength="30"
-        style="width:100%; background:var(--dark); border:1px solid rgba(255,255,255,0.1); color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; padding:0.7rem 0.9rem; border-radius:3px; outline:none;"
-        onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-    </div>
-
-    <!-- Email -->
+    <!-- Display name -->
     <div style="margin-bottom:0.75rem;">
-      <input type="email" id="input-email" placeholder="Email address"
+      <input type="text" id="input-username" placeholder="Your name (shown on leaderboard)" maxlength="30"
         style="width:100%; background:var(--dark); border:1px solid rgba(255,255,255,0.1); color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; padding:0.7rem 0.9rem; border-radius:3px; outline:none;"
         onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"
         onkeydown="if(event.key==='Enter') handleAuth()">
     </div>
 
-    <!-- Password -->
+    <!-- Instagram handle (optional) -->
     <div style="margin-bottom:1.25rem;">
-      <input type="password" id="input-password" placeholder="Password"
-        style="width:100%; background:var(--dark); border:1px solid rgba(255,255,255,0.1); color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; padding:0.7rem 0.9rem; border-radius:3px; outline:none;"
-        onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"
-        onkeydown="if(event.key==='Enter') handleAuth()">
+      <div style="position:relative;">
+        <span style="position:absolute; left:0.9rem; top:50%; transform:translateY(-50%); color:var(--text-dim); font-size:0.9rem; pointer-events:none;">@</span>
+        <input type="text" id="input-instagram" placeholder="instagram (optional)" maxlength="30"
+          style="width:100%; background:var(--dark); border:1px solid rgba(255,255,255,0.1); color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; padding:0.7rem 0.9rem 0.7rem 1.6rem; border-radius:3px; outline:none;"
+          onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"
+          onkeydown="if(event.key==='Enter') handleAuth()">
+      </div>
+      <p style="font-size:0.7rem; color:var(--text-dim); margin-top:0.35rem; text-align:left; line-height:1.4;">🔒 Private — not shown on leaderboard. Only used to contact you if you win.</p>
     </div>
 
     <div id="auth-error" style="display:none; background:rgba(192,57,43,0.12); border:1px solid rgba(192,57,43,0.3); color:#e74c3c; padding:0.6rem 0.9rem; border-radius:3px; font-size:0.82rem; margin-bottom:1rem;"></div>
 
-    <button class="btn btn-gold" style="width:100%; padding:0.75rem; font-size:0.9rem;" onclick="handleAuth()" id="auth-btn">Sign In</button>
+    <button class="btn btn-gold" style="width:100%; padding:0.75rem; font-size:0.9rem;" onclick="handleAuth()" id="auth-btn">Let's Go →</button>
 
     <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.06); display:flex; justify-content:center; gap:1rem;">
       <a href="https://www.tiktok.com/@filmclub.id" target="_blank" style="font-size:0.72rem; color:var(--text-dim); text-decoration:none; letter-spacing:0.06em;">TikTok @filmclub.id</a>
@@ -1112,13 +1103,8 @@ async function upsertProfile() {
   if (existing) {
     userProfile = { display_name: existing.display_name, avatar_url: existing.avatar_url };
   } else {
-    const fallbackName = currentUser.user_metadata?.display_name || currentUser.email.split('@')[0];
-    await sb.from('profiles').insert({
-      id: currentUser.id,
-      display_name: fallbackName,
-      avatar_url: null,
-    });
-    userProfile = { display_name: fallbackName, avatar_url: null };
+    // Profile not found — show sign in screen
+    userProfile = { display_name: 'Player', avatar_url: null };
   }
 }
 
@@ -1155,21 +1141,6 @@ async function updateStatPlayers() {
 // ═══════════════════════════════════════════════
 //  AUTH
 // ═══════════════════════════════════════════════
-let authMode = 'signin';
-
-function switchAuthTab(mode) {
-  authMode = mode;
-  const isSignup = mode === 'signup';
-  document.getElementById('tab-signin').style.background = isSignup ? 'transparent' : 'var(--gold)';
-  document.getElementById('tab-signin').style.color      = isSignup ? 'var(--text-dim)' : 'var(--black)';
-  document.getElementById('tab-signup').style.background = isSignup ? 'var(--gold)' : 'transparent';
-  document.getElementById('tab-signup').style.color      = isSignup ? 'var(--black)' : 'var(--text-dim)';
-  document.getElementById('field-username').style.display = isSignup ? 'block' : 'none';
-  document.getElementById('auth-btn').textContent = isSignup ? 'Create Account' : 'Sign In';
-  document.getElementById('auth-title').textContent = isSignup ? 'Create Account' : 'Sign In';
-  document.getElementById('auth-error').style.display = 'none';
-}
-
 function showAuthError(msg) {
   const el = document.getElementById('auth-error');
   el.textContent = msg;
@@ -1177,45 +1148,45 @@ function showAuthError(msg) {
 }
 
 async function handleAuth() {
-  const email    = document.getElementById('input-email').value.trim();
-  const password = document.getElementById('input-password').value;
-  const username = document.getElementById('input-username').value.trim();
-  const btn      = document.getElementById('auth-btn');
+  const username  = document.getElementById('input-username').value.trim();
+  const instagram = document.getElementById('input-instagram').value.trim().replace(/^@/, '');
+  const btn       = document.getElementById('auth-btn');
 
   document.getElementById('auth-error').style.display = 'none';
-
-  if (!email || !password) return showAuthError('Please fill in all fields.');
-  if (authMode === 'signup' && !username) return showAuthError('Please enter a display name.');
-  if (password.length < 6) return showAuthError('Password must be at least 6 characters.');
+  if (!username) return showAuthError('Please enter your name.');
 
   btn.textContent = '...';
   btn.disabled = true;
 
-  if (authMode === 'signup') {
-    const { data, error } = await sb.auth.signUp({
-      email,
-      password,
-      options: { data: { display_name: username } }
-    });
-    if (error) { showAuthError(error.message); btn.textContent = 'Create Account'; btn.disabled = false; return; }
-    if (data.user) {
-      await sb.from('profiles').insert({
-        id: data.user.id,
-        display_name: username,
-        avatar_url: null,
-      });
-    }
-  } else {
-    const { error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) { showAuthError('Incorrect email or password.'); btn.textContent = 'Sign In'; btn.disabled = false; return; }
+  // Sign in anonymously — no email/password needed
+  const { data, error } = await sb.auth.signInAnonymously();
+  if (error) {
+    showAuthError('Something went wrong. Please try again.');
+    btn.textContent = "Let's Go →";
+    btn.disabled = false;
+    return;
   }
 
-  btn.textContent = authMode === 'signup' ? 'Create Account' : 'Sign In';
+  // Save profile
+  await sb.from('profiles').insert({
+    id: data.user.id,
+    display_name: username,
+    avatar_url: null,
+    instagram_handle: instagram || null,
+  });
+
+  btn.textContent = "Let's Go →";
   btn.disabled = false;
 }
 
 async function signOut() {
   await sb.auth.signOut();
+  currentUser  = null;
+  userProfile  = null;
+  myPredictions = {};
+  renderUserArea();
+  document.getElementById('nav-predictions').style.display = 'none';
+  document.getElementById('nav-admin').style.display = 'none';
   showPage('home');
   showToast('Signed out');
 }
@@ -1395,7 +1366,7 @@ async function renderLeaderboard() {
 
   await loadWinners();
 
-  const { data: profiles } = await sb.from('profiles').select('*');
+  const { data: profiles } = await sb.from('public_profiles').select('*');
   const { data: allPredictions } = await sb.from('predictions').select('*');
 
   if (!profiles || !allPredictions) {
