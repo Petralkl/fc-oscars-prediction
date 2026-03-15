@@ -1197,6 +1197,9 @@ async function handleAuth() {
     return;
   }
 
+  // Set profile immediately so name shows in header right away
+  userProfile = { display_name: username, avatar_url: null };
+
   btn.textContent = "Let's Go →";
   btn.disabled = false;
 }
@@ -1226,7 +1229,7 @@ function renderUserArea() {
   if (currentUser && userProfile) {
     area.innerHTML = `
       <img class="avatar" src="${userProfile.avatar_url || ''}" onerror="this.style.display='none'" alt="">
-      <span style="font-size:0.85rem; color:var(--text-dim);">${userProfile.display_name.split(' ')[0]}</span>
+      <span style="font-size:0.85rem; color:var(--text-dim);">${userProfile.display_name}</span>
       <button class="btn btn-outline" onclick="signOut()">Sign Out</button>
     `;
   } else {
