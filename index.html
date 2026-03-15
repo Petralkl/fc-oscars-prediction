@@ -1161,19 +1161,28 @@ async function handleAuth() {
   // Sign in anonymously — no email/password needed
   const { data, error } = await sb.auth.signInAnonymously();
   if (error) {
-    showAuthError('Something went wrong. Please try again.');
+    console.error('Auth error:', error);
+    showAuthError(error.message || 'Something went wrong. Please try again.');
     btn.textContent = "Let's Go →";
     btn.disabled = false;
     return;
   }
 
   // Save profile
-  await sb.from('profiles').insert({
+  const { error: profileError } = await sb.from('profiles').insert({
     id: data.user.id,
     display_name: username,
     avatar_url: null,
     instagram_handle: instagram || null,
   });
+
+  if (profileError) {
+    console.error('Profile error:', profileError);
+    showAuthError(profileError.message);
+    btn.textContent = "Let's Go →";
+    btn.disabled = false;
+    return;
+  }
 
   btn.textContent = "Let's Go →";
   btn.disabled = false;
